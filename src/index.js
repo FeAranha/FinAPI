@@ -56,12 +56,12 @@ app.post("/account", (request, response) => {
 
 //app.use(verifyIfExistsAccountCPF)
 
-app.get("/statement",verifyIfExistsAccountCPF, (request, response) => {
+app.get("/statement", verifyIfExistsAccountCPF, (request, response) => {
     const { customer } = request
     return response.json(customer.statement)
 })
 
-app.post("/deposit",verifyIfExistsAccountCPF, (request, response) => {
+app.post("/deposit", verifyIfExistsAccountCPF, (request, response) => {
     const { description, amount } = request.body
 
     const { customer } = request
@@ -77,7 +77,7 @@ app.post("/deposit",verifyIfExistsAccountCPF, (request, response) => {
     return response.status(201).send()
 })
 
-app.post("/withdraw",verifyIfExistsAccountCPF, (request, response) => {
+app.post("/withdraw", verifyIfExistsAccountCPF, (request, response) => {
     const { amount } = request.body
     const { customer } = request
 
@@ -96,6 +96,48 @@ app.post("/withdraw",verifyIfExistsAccountCPF, (request, response) => {
     customer.statement.push(statementOperation)
 
     return response.status(201).send()
+})
+
+app.get("/statement/date", verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request
+    const { date } = request.query
+
+    const dateFormat = new Date(date + " 00:00")
+
+    const statement = customer.statement.filter((statement) => statement.created_at.toDateString() === new Date(dateFormat).toDateString())
+
+    return response.json(statement)
+})
+
+app.put("/account", verifyIfExistsAccountCPF, (request, response) => {
+    const { name } = request.body
+    const { customer } = request
+
+    customer.name = name
+
+    return response.status(201).send()
+})
+
+app.get("/account", verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request
+
+    return response.json(customer)
+})
+
+app.delete("/account", verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request
+
+    customers.splice(customer, 1)
+
+    return response.status(200).json(customers)
+})
+
+app.get("/balance", verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request
+
+    const balance = getBalance(customer.statement)
+
+    return response.json(balance)
 })
 
 app.listen(3333)
