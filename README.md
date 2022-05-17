@@ -1,5 +1,7 @@
 ### FinAPI
-API Criada em aula pela Rocketseat com a Dani Leão
+API backend Criada em aula pela Rocketseat com a Dani Leão
+
+CRUD, NodeJs, express, API Rest, Insomnia
 
 ##Requisitos
 
